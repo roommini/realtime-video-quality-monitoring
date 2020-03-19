@@ -18,6 +18,10 @@ ffprobe -f lavfi movie=/dev/video0,signalstats="stat=tout+vrep+brng" -show_frame
 ``` bash
 ffmpeg -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video0 -f mpegts udp://127.0.0.1:9999
 ```
+**probe udp stream:**
+``` bash
+ffprobe -f lavfi movie="udp\\\://127.0.0.1\\\:9999",signalstats="stat=tout+vrep+brng",deflicker=bypass=1 -show_frames
+```
 
 **play captured stream:**
 ``` bash
