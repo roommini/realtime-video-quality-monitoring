@@ -86,10 +86,10 @@ func (collector *FooCollector) Collect(ch chan<- prometheus.Metric) {
 	line := getLine()
 	if line != "empty" {
 		metrics := convertLine(line)
-		ch <- prometheus.MustNewConstMetric(collector.ylowMetric, prometheus.CounterValue, metrics[30])
-		ch <- prometheus.MustNewConstMetric(collector.yavgMetric, prometheus.CounterValue, metrics[31])
-		ch <- prometheus.MustNewConstMetric(collector.yhighMetric, prometheus.CounterValue, metrics[32])
-		ch <- prometheus.MustNewConstMetric(collector.barMetric, prometheus.CounterValue, metrics[32])
+		ch <- prometheus.MustNewConstMetric(collector.ylowMetric, prometheus.GaugeValue, metrics[30])
+		ch <- prometheus.MustNewConstMetric(collector.yavgMetric, prometheus.GaugeValue, metrics[31])
+		ch <- prometheus.MustNewConstMetric(collector.yhighMetric, prometheus.GaugeValue, metrics[32])
+		ch <- prometheus.MustNewConstMetric(collector.barMetric, prometheus.GaugeValue, metrics[32])
 	} else {
 		log.Printf("line: %v", line)
 	}
