@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -43,64 +43,26 @@ func newFooCollector() *FooCollector {
 		),
 	}
 }
-func getYlow() float64 {
+
+func getLine() string {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		if strings.HasPrefix(scanner.Text(), "frame") {
-			Val, _ := strconv.ParseFloat(strings.Split(scanner.Text(), ",")[30], 64) //[29], 64)
-			//fmt.Print(Val)
-			return Val
+			return scanner.Text()
 		}
 	}
-	return 0.5
-}
-func getYavg() float64 {
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		if strings.HasPrefix(scanner.Text(), "frame") {
-			Val, _ := strconv.ParseFloat(strings.Split(scanner.Text(), ",")[31], 64) //[29], 64)
-			//fmt.Print(Val)
-			return Val
-		}
-	}
-	return 0.5
-}
-func getYhigh() float64 {
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		if strings.HasPrefix(scanner.Text(), "frame") {
-			Val, _ := strconv.ParseFloat(strings.Split(scanner.Text(), ",")[32], 64) //[29], 64)
-			//fmt.Print(Val)
-			return Val
-		}
-	}
-	return 0.5
+	return "empty"
 }
 
-func getVals() []float64 {
-	var metrics []float64
-	var cur float64
-	reader := bufio.NewReader(os.Stdin)
-	line, err := reader.ReadString('\n')
-	if err != nil {
-		panic(err)
-	}
-	if strings.HasPrefix(line, "frame") {
-		s := strings.Split(line, ",")[29:]
-		//println("blaaa")
-		//return []float64{2.0, 3.0}
-		for _, val := range s {
-			//fmt.Println(val)
-			cur, _ = strconv.ParseFloat(val, 64)
-			metrics = append(metrics, cur)
+func convertLine(Line string) []float64 {
+	var numbers []float64
+	lst := strings.Split(Line, ",")[30:]
+	for _, metric := range lst {
+		if n, err := strconv.ParseFloat(metric, 64); err == nil {
+			numbers = append(numbers, n)
 		}
-		//}
-		fmt.Println(line)
-		return metrics
-	} else {
-		reader.Reset(os.Stdin)
 	}
-	return []float64{2.0, 3.0} // TODO remove
+	return numbers
 }
 
 //Each and every collector must implement the Describe function.
@@ -121,10 +83,16 @@ func (collector *FooCollector) Collect(ch chan<- prometheus.Metric) {
 	//for each descriptor or call other functions that do so.
 	//Write latest value for each metric in the prometheus metric channel.
 	//Note that you can pass CounterValue, GaugeValue, or UntypedValue types here.
-	ch <- prometheus.MustNewConstMetric(collector.ylowMetric, prometheus.CounterValue, getYlow())
-	ch <- prometheus.MustNewConstMetric(collector.yavgMetric, prometheus.CounterValue, getYavg())
-	ch <- prometheus.MustNewConstMetric(collector.yhighMetric, prometheus.CounterValue, getYhigh())
-	ch <- prometheus.MustNewConstMetric(collector.barMetric, prometheus.CounterValue, getYlow())
+	line := getLine()
+	if line != "empty" {
+		metrics := convertLine(line)
+		ch <- prometheus.MustNewConstMetric(collector.ylowMetric, prometheus.CounterValue, metrics[30])
+		ch <- prometheus.MustNewConstMetric(collector.yavgMetric, prometheus.CounterValue, metrics[31])
+		ch <- prometheus.MustNewConstMetric(collector.yhighMetric, prometheus.CounterValue, metrics[32])
+		ch <- prometheus.MustNewConstMetric(collector.barMetric, prometheus.CounterValue, metrics[32])
+	} else {
+		log.Printf("line: %v", line)
+	}
 
 }
 

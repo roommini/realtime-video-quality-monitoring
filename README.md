@@ -10,8 +10,7 @@ go build main.go collector.go
 ```
 3. stream webcam to ffprobe and pipe the results to the exporter via:
 ```bash
-ffprobe -f lavfi movie=/dev/video0,signalstats="stat=tout+vrep+brng" -show_frames -print_format csv | ./main -port 2112
-
+ffprobe -f lavfi movie=/dev/video0,signalstats="stat=tout+vrep+brng",deflicker=bypass=1  -show_frames -print_format csv | ./main -port 2112
 ```
 ## snippets:
 **capture stream from webcam:**
@@ -22,7 +21,11 @@ ffmpeg -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video0 -f mpegts udp://
 ``` bash
 ffprobe -f lavfi movie="udp\\\://127.0.0.1\\\:9999",signalstats="stat=tout+vrep+brng",deflicker=bypass=1 -show_frames
 ```
+**build and probe:**
+``` bash
+go build main.go collector.go && ffprobe -f lavfi movie="udp\\\://127.0.0.1\\\:9999",signalstats="stat=tout+vrep+brng",deflicker=bypass=1 -show_frames -print_format csv | ./main -port 2112
 
+```
 **play captured stream:**
 ``` bash
 ffplay udp://127.0.1:9999
