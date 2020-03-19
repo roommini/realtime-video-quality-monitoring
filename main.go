@@ -12,10 +12,10 @@ import (
 func main() {
 	port := flag.String("port", "2113", "prometheus port")
 	flag.Parse()
-	//Create a new instance of the foocollector and
+	//Create a new instance of the vqmcollector and
 	//register it with the prometheus client.
-	foo := newFooCollector()
-	prometheus.MustRegister(foo)
+	vqm := newVqmCollector()
+	prometheus.MustRegister(vqm)
 
 	//This section will start the HTTP server and expose
 	//any metrics on the /metrics endpoint.
