@@ -1,0 +1,20 @@
+11.10 bitplanenoise
+11.12 blackframe
+11.47 deflicker
+11.51 deshake
+11.56 dnn_processing
+vizualize - https://hhsprings.bitbucket.io/docs/programming/examples/ffmpeg/video_data_visualization/drawgraph_with_signalstats.html
+
+11.63 entropy
+11.83 freezedetect
+11.105 idet
+11.113 libvmaf
+11.129 mestimate
+11.129 mestimate
+11.138 noise
+11.183 showinfo
+11.187 signalstats
+11.204 thumbnail
+11.219 vidstabdetect
+11.225 vmafmotion
+14.5 mptestsrc
