@@ -46,3 +46,7 @@
 
 <img src="./images/dark.gif"></img>
 
+## snippet for playing with multiple artifacts
+```bash
+ffplay -f lavfi -i testsrc -vf "split=4[a][b][c][d];[b]vignette='PI/30+random(10)*PI/5':eval=frame[x];[c]noise=c0s=90:allf=t[y];[d]hue='s=sin(2*PI*t^0.5)'[z];[a][x][y][z]hstack=4"
+```
