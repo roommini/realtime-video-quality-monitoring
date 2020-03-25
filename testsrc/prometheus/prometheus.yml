@@ -1,0 +1,86 @@
+# my global config
+global:
+  scrape_interval:     5s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # By default, scrape targets every 15 seconds.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'video-monitoring'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+#
+#  - job_name: 'baseline'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+#    scrape_interval: 1s
+#    static_configs:
+#        - targets: ['rtvqm:2112']
+
+  - job_name: 'raw'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.raw'
+      type: 'A'
+      port: 2112
+
+  - job_name: 'noise'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.noise'
+      type: 'A'
+      port: 2112
+
+  - job_name: 'flicker'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.flicker'
+      type: 'A'
+      port: 2112
+
+  - job_name: 'blur'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.blur'
+      type: 'A'
+      port: 2112
+
+  - job_name: 'freeze'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.freeze'
+      type: 'A'
+      port: 2112
+
+  - job_name: 'saturation'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.saturation'
+      type: 'A'
+      port: 2112
+
+  - job_name: 'bright'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.bright'
+      type: 'A'
+      port: 2112
+
+  - job_name: 'dark'
+    scrape_interval: 1s
+    dns_sd_configs:
+    - names:
+      - 'tasks.dark'
+      type: 'A'
+      port: 2112
+

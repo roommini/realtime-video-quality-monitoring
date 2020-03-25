@@ -12,6 +12,12 @@ go build main.go collector.go
 ```bash
 ffprobe -f lavfi movie=/dev/video0,signalstats="stat=tout+vrep+brng",deflicker=bypass=1  -show_frames -print_format csv | ./main -port 2112
 ```
+## Development
+- build docker image:
+```bash
+docker image build -f Dockerfile . -t rtvqm:latest 
+
+```
 ## snippets:
 **capture stream from webcam:**
 ``` bash

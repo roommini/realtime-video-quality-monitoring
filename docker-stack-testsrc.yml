@@ -1,0 +1,119 @@
+version: '3.7'
+
+networks:
+  monitor-net:
+
+services:
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./testsrc/prometheus:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    networks:
+      - monitor-net
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      restart_policy:
+        condition: on-failure
+
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus
+    volumes:
+      - ./testsrc/grafana/provisioning/:/etc/grafana/provisioning/
+    ports:
+      - 3000:3000
+    networks:
+      - monitor-net
+    user: "104"
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      restart_policy:
+        condition: on-failure
+  
+  testsrc-baseline:
+    image: jrottenberg/ffmpeg:4.1-scratch
+    command: "-f lavfi -i testsrc -f mpegts udp://127.0.0.1:9998"
+
+  raw:
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
+  noise:
+    environment:
+    - SRC=testsrc,noise=c0s=90:allf=t
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
+  flicker:
+    environment:
+    - SRC=testsrc,vignette='PI/30+random(10)*PI/5':eval=frame
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
+  blur:
+    environment:
+    - SRC=testsrc,unsharp=7:7:-2:7:7:-2
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
+  freeze:
+    environment:
+    - SRC=testsrc=rate=0.1
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
+  saturation:
+    environment:
+    - SRC=testsrc,hue='s=sin(2*PI*t^0.5)'
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
+  bright:
+    environment:
+    - SRC=testsrc,lutyuv='y=2*val'
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
+  dark:
+    environment:
+    - SRC=testsrc,lutyuv='y=val/2'
+    image: rtvqm:latest
+    networks:
+      - monitor-net
+    deploy:
+      replicas: 1
+
