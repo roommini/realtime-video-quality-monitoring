@@ -1,4 +1,13 @@
 # Real-time Video Quality Monitoring
+
+## Architecture
+<img src="./testsrc/images/arch.jpg">
+
+1. Video sources broadcasts video streams
+2. Dedicated containers with ffprobe generate statistics about the video stream
+3. The statistics are piped to custom prometheus exporters
+4. Prometheus probes these exporters and collects metrics about the video streams
+5. The metrics are visable in real-time in Grafana
 ## Deployment:
 1. setup Grafana and prometheus by deploying the docker stack:
 ```bash
